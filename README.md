@@ -8,5 +8,9 @@ Also outputs approval rates for processed images to a csv.
 The script converts MTurk image annotations from workers to (possibly downscaled) pixel arrays, with each element in the 2d array representing a pixel of the image that is either "marked" (1) or "unmarked" (0). A 3100 * 3100 pixel image may be represented as a 310 * 310 2d array, for example. IOU is then calculated elementwise on these representative arrays. Downscaling allows for large batches of images to be processed rapidly with almost no error from loss of fidelity in the annotation data.
 
 ## Outputs
-
+<p float="left">
+<img src="https://github.com/malyalar/stone_free/blob/master/worker_ex.png" width="310" height="280" />
+<img src="https://github.com/malyalar/stone_free/blob/master/expert_ex.png" width="310" height="280" />
+<img src="https://github.com/malyalar/stone_free/blob/master/intersect_ex.png" width="310" height="280" />
+</p>
 
