@@ -11,6 +11,6 @@ The script converts MTurk image annotations from workers to (possibly downscaled
 <p float="left">
 <img src="https://github.com/malyalar/stone_free/blob/master/worker_ex.png" width="250" height="260" />
 <img src="https://github.com/malyalar/stone_free/blob/master/expert_ex.png" width="250" height="260" />
-<img src="https://github.com/malyalar/stone_free/blob/master/intersect_ex.png" width="250" height="320" />
+<img src="https://github.com/malyalar/stone_free/blob/master/intersect_ex.png" width="250" height="260" />
 </p>
 
