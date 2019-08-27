@@ -24,13 +24,24 @@ loaded in, so I assume for now they are identical to the MTurk annotations.
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 import csv
-import xmltodict
-import json
 import pandas as pd
 import re
 
-  
+########################
+# SCRIPT VARIABLE INPUTS
+########################
+
+# row index/URL
+# downscale
+# show images: worker/expert/intersect/decline
+# approval threshold
+
+########################
+# SCRIPT VARIABLE INPUTS
+########################
+
 # import csv as datatable, then relabel headers
 batch_results = pd.read_csv(\
                 "batch_results.csv",\
@@ -44,8 +55,36 @@ batch_results = pd.read_csv(\
 batch_results.columns=['URL','tr_results','y_res','x_res','ex_results']
 batch_results.head()
 
-# current image being processed, indicates row index
-c_image = 7
+row_count = len(batch_results.index)-1
+
+
+index = int(input('Select the row index of batch_results.csv (from 0 to 7):'))
+if int(index)<=row_count and int(index)>=0:
+    c_image = index
+    
+elif int(index)>=row_count or int(index)<=0:
+    print('Input out of bounds. Image index set to 0')
+    c_image=0
+else:
+    print('Input out of bounds. Image index set to 0')
+    c_image=0
+
+
+print("")
+scale_input = int(input('Select integer downscaling factor (suggested 10):'))
+if int(index)>0:
+    scale_factor = scale_input
+    
+else:
+    print('Input out of bounds. Downscale factor set to 10')
+    scale_factor = 10
+
+
+
+
+
+# current image being processed, 1 and 4 indicates column index in dataframe
+
 
 worker_assignment_raw = batch_results.iloc[c_image,1]
 expert_assignment_raw = batch_results.iloc[c_image,4]
@@ -55,8 +94,8 @@ expert_assignment_raw = batch_results.iloc[c_image,4]
 
 ##### -----------------------------
 ## CONVERSION OF worker_assignment_raw to 2d int array
+## Removes all extra characters except pixel integers in string
 
-## Remove all extra characters except pixel integers in string
 replace = {'"label":"Stone",': "", "{": "", "}": "", '"height":' : "", '"left":' : "", '"top":' : "", '"width":' : "", '[' : "", ']' : ""}
 replace = dict((re.escape(k), v) for k, v in replace.items())
 pattern = re.compile("|".join(replace.keys()))
@@ -110,7 +149,6 @@ print("")
 
 
 
-
 # create an array for a given image URL of length x*y resolution
 # convert any given row of numbers into a one hot vector 3100*3100 long
 
@@ -118,17 +156,17 @@ print("")
 #starting at the top left point, get x.res
 # load image from corresponding URL to use for processing (?)
 
-x_res = int(batch_results.iloc[c_image,3]/10)
-y_res = int(batch_results.iloc[c_image,2]/10)
+x_res = int(batch_results.iloc[c_image,3]/scale_factor)
+y_res = int(batch_results.iloc[c_image,2]/scale_factor)
 
 # build numpy array of zeros
 tr_array = np.zeros((x_res,y_res), dtype=int)
 for n_row in range(0,len(war_int_array)):
     
-    h_tr = int(round(war_int_array[n_row,0]/10))
-    l_tr = int(round(war_int_array[n_row,1]/10))
-    t_tr = int(round(war_int_array[n_row,2]/10))
-    w_tr = int(round(war_int_array[n_row,3]/10))
+    h_tr = int(round(war_int_array[n_row,0]/scale_factor))
+    l_tr = int(round(war_int_array[n_row,1]/scale_factor))
+    t_tr = int(round(war_int_array[n_row,2]/scale_factor))
+    w_tr = int(round(war_int_array[n_row,3]/scale_factor))
 
     # converts bounding box covered pixels to 1's 
     tr_array[t_tr:(t_tr+h_tr),l_tr:(l_tr+w_tr)] = 1
@@ -137,18 +175,17 @@ for n_row in range(0,len(war_int_array)):
 # uncomment to visualize worker annotation in csv format. Too lazy to make something in matplotlib.
 # np.savetxt("arrayvis_worker.csv", tr_array, delimiter=",")
 # print("Created visualization of worker annotation.\
-#       See in root folder: 'arrayvis_worker.csv'")    
-    
+#       See in root folder: 'arrayvis_worker.csv'")
 
-
+        
 # build numpy array of zeros
 ex_array = np.zeros((x_res,y_res), dtype=int)
 for n_row in range(0,len(ear_int_array)):
     
-    h_tr = int(round(ear_int_array[n_row,0]/10))
-    l_tr = int(round(ear_int_array[n_row,1]/10))
-    t_tr = int(round(ear_int_array[n_row,2]/10))
-    w_tr = int(round(ear_int_array[n_row,3]/10))
+    h_tr = int(round(ear_int_array[n_row,0]/scale_factor))
+    l_tr = int(round(ear_int_array[n_row,1]/scale_factor))
+    t_tr = int(round(ear_int_array[n_row,2]/scale_factor))
+    w_tr = int(round(ear_int_array[n_row,3]/scale_factor))
 
     # converts bounding box covered pixels to 1's 
     ex_array[t_tr:(t_tr+h_tr),l_tr:(l_tr+w_tr)] = 1
@@ -172,6 +209,63 @@ if len(tr_array) == len(ex_array) and len(tr_array[1]) == len(ex_array[1]):
     print("")
     print('Intersection over union result:')
     print("% "+str(round(agreement,2)))
+    print("")
+    
+    # fill in the agreement
+    f = open('batch_results.csv', 'r', newline = '')
+    reader = csv.reader(f)
+    mylist = list(reader)
+    f.close()
+    mylist[(c_image+1)][31] = round(agreement,2)
+    
+    new_batch_results = open('batch_results.csv', 'w', newline = '')
+    csv_writer = csv.writer(new_batch_results)
+    csv_writer.writerows(mylist)
+    new_batch_results.close()
+    
+    print("Agreement (IOU and %) written to batch_results.csv")
+    
+    
     
 else:
     print("Ensure image resolutions (and array sizes) are identical.")
+    print("")
+    
+    
+    
+answer = str(input('Show color visualization of arrays (show "worker"/"expert"/"intersect"/"decline"):')).lower().strip()
+
+if answer == "worker":
+        
+    fig = plt.figure(figsize=(6, 3.2))
+
+    ax = fig.add_subplot(111)
+    ax.set_title('Worker array visualization.')
+    plt.imshow(tr_array*9)
+    plt.show()
+    
+elif answer == "expert":  
+
+    fig = plt.figure(figsize=(6, 3.2))
+
+    ax = fig.add_subplot(111)
+    ax.set_title('Expert array visualization.')
+    plt.imshow(ex_array*4)
+    plt.show()
+    
+elif answer == "intersect":
+    
+    fig = plt.figure(figsize=(6, 3.2))
+
+    ax = fig.add_subplot(111)
+    ax.set_title('Intersection array visualization')
+    intersect_array = (tr_array*9) + (ex_array*4)
+    plt.imshow(intersect_array)
+    
+    plt.show()
+    print('     yellow = intersect')
+    print('     green = worker')
+    print('     blue = expert')    
+
+else:
+    print('Visualizations declined.')
