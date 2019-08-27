@@ -14,3 +14,5 @@ The script converts MTurk image annotations from workers to (possibly downscaled
 <img src="https://github.com/malyalar/stone_free/blob/master/intersect_ex.png" width="250" height="255" />
 </p>
 
+Intersection-over-union result is 24.37%.
+Agreement is written to batch_results.csv.
