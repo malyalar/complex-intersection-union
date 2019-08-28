@@ -15,4 +15,5 @@ The script converts MTurk image annotations from workers to (possibly downscaled
 </p>
 
 Intersection-over-union result is 24.37%.
+
 Agreement is written to batch_results.csv.
