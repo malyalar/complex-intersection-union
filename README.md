@@ -20,4 +20,4 @@ MTurk bounding-box worker annotations are written into batch_results.csv's as st
 <img src="https://github.com/malyalar/complex-intersection-union/blob/master/intersect_example.png">
 </p>
 
-Intersection-over-union result is 15.99%. Agreement is written to batch_results.csv.
+Intersection-over-union result is 15.99%. Agreement is written to batch_results.csv. (The image does not correspond to the input labels given above.)
