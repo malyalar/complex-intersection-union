@@ -9,11 +9,7 @@ The script converts MTurk image annotations from workers to (possibly downscaled
 
 ## Outputs
 <p float="left">
-<img src="https://github.com/malyalar/stone_free/blob/master/worker_ex.png" width="250" height="255" />
-<img src="https://github.com/malyalar/stone_free/blob/master/expert_ex.png" width="250" height="260" />
-<img src="https://github.com/malyalar/stone_free/blob/master/intersect_ex.png" width="250" height="255" />
+<img src="https://github.com/malyalar/stone_free/blob/master/intersect_ex.png">
 </p>
 
-Intersection-over-union result is 24.37%.
-
-Agreement is written to batch_results.csv.
+Intersection-over-union result is 15.99%. Agreement is written to batch_results.csv.
