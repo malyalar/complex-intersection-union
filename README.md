@@ -25,6 +25,6 @@ Intersection-over-union result is 15.99%. Agreement is written to batch_results.
 
 ## Other
 
-Two other scripts are included in this repo: create_image_URLs.py and assess_workers.py. The former script references a selected Amazon S3 bucket of images (or any file, really) and creates a list of URLs for every item in the bucket. This can be fed to MTurk to link Workers to the images. 
+Two other scripts are included in this repo: create_csv_imageURLs.py and assess_workers.py. The former script references a selected Amazon S3 bucket of images (or any file, really) and creates a list of URLs for every item in the bucket. This can be fed to MTurk to link Workers to the images. 
 
 The latter script assesses the average accuracy of unique Workers who have completed assignments that can be compared to the experts. Then, it not only approves or rejects individual HITs/annotations based on whether they match up with the expert answer (which only some HITs might have) but will reject all assignments submitted by Workers with averages below a threshold percent accuracy.
