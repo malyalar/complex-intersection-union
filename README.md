@@ -11,7 +11,7 @@ The script converts MTurk image annotations from workers to downscaled pixel arr
 
 MTurk bounding-box worker annotations are written into batch_results.csv's as strings, representing an array of variable length (depending on how many boxes are drawn by the Worker):
 
-[{"height":465,"label":"Stone","left":841,"top":570,"width":409},{"height":637,"label":"Stone","left":1703,"top":1680,"width":382},{"height":944,"label":"Stone","left":1186,"top":1801,"width":1518},{"height":287,"label":"Stone","left":1620,"top":1386,"width":472}]
+[{"height":465,"label":"Stone","left":841,"top":570,"width":409}, {"height":637,"label":"Stone","left":1703,"top":1680,"width":382},{"height":944,"label":"Stone","left":1186,"top":1801,"width":1518},{"height":287,"label":"Stone","left":1620,"top":1386,"width":472}]
 
 "Expert" or ground-truth annotations are expected to be in the same format, under a column in the .csv titled, "expertAnswer" (rename this to whatever you like). Edit the "expert" section of the parse_dataframe() function to parse different string formats.
 
