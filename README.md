@@ -1,6 +1,6 @@
 # Multi-Bounding Box Intersection-over-Union
 
-Python script that calculates intersection over union for multi-bounding-box annotations between workers and valid experts. Works even if the number of boxes between worker and expert annotations is not equal. Also includes scripts to create an input URL .csv from buckets of images stored on Amazon S3 for manual annotation by MTurk Workers.
+Python script that calculates intersection over union for multi-bounding-box annotations between workers and valid experts. Works even if the number of boxes between worker and expert annotations is not equal. Also includes scripts to create an input_url.csv from buckets of images stored on Amazon S3 for manual annotation by MTurk Workers.
 
 Also outputs approval rates and other analyses to a csv. Can loop through a csv-format MTurk submitted assignment batch, comparing all submitted assignment results to expert-validated results.
 
