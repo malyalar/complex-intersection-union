@@ -4,26 +4,28 @@ Created on Sat Aug 17 14:31:15 2019
 
 Author: Rohit Malyala
 
-Intended for: - analysis of Worker annotations from MTurk;
-              - validation of responses compared to Expert annotations;
-              - and visualization of these results.
+Intended for analysis of Worker annotations from MTurk versus ground truth
+labels, writing individual and summary data to a .csv, and visualization of 
+the results.
 
-Uses a non-geometric, near-exact method of assessing intersection/union
-between Worker and Expert annotations of multiple bounding-boxes.
-Labeled areas (with n boxes) are represented as 2d pixel arrays, then 
-compared to each other for binary agreement per-pixel or per-array index value.
+Uses a non-geometric, exact or nearly-so method of assessing intersection/union
+between Worker and Expert annotations of multiple bounding-boxes. Labeled 
+areas (with n boxes) are represented as 2d pixel arrays, then compared to 
+each other for binary agreement per-pixel or per-array index value.
 
 Calculations are approximate as pixel array sizes is minimized by 100 (variable).
-i.e. an image of resolution 3100*3100 is represented as a 310*310 array.
-If image resolutions are sufficently small this may be fixed later.
+e.g. an image of resolution 3100*3100 is represented as a 310*310 array
+(downscaling of 10 on the x and y axes). If image resolutions are sufficently 
+small, it may not be necessary to use array downscaling to improve speed. This
+example 310*310 array of bool-format values are multiplied or added to each
+other to calculate intersection and union, which gives the I/U.
 
-Loops through every HIT in an MTurk batch_results[xxxx].csv download. For 
-every HIT with a viable expert annotation, the agreement between worker
-and expert is written into the csv.
+The program then loops through every HIT in an MTurk batch_results[xxxx].csv 
+download. For every HIT with a viable expert annotation, the agreement 
+between worker and expert is written into the csv.
 
-Currently unsure of what format precisely the Expert annotations will be 
+I am currently unsure of what format precisely the Expert annotations will be 
 loaded in, so I assume for now they are identical to the MTurk annotations.
-That half of the parsing method can be changed later.
 
 """
 
@@ -39,7 +41,7 @@ class Batch_Results:
     def __init__(self, csv_filename="batch_results.csv"):
 
         self.csv_filename = csv_filename
-        # self.c_image = ""
+
         self.scale_factor = ""
         self.war_int_array = ""
         self.ear_int_array = ""
@@ -53,13 +55,14 @@ class Batch_Results:
         self.batch_results = pd.read_csv(\
             self.csv_filename,\
                 usecols=[\
+                        'HITId',\
                         'Input.image_url',\
                         'Answer.annotatedResult.boundingBoxes',\
                         'Answer.annotatedResult.inputImageProperties.height',\
                         'Answer.annotatedResult.inputImageProperties.width',\
                         'expertAnswer'])
         
-        self.batch_results.columns=['URL','tr_results','y_res','x_res','ex_results']
+        self.batch_results.columns=['HIT_Id','URL','tr_results','y_res','x_res','ex_results']
         return self.batch_results
 
 
@@ -76,11 +79,11 @@ class Batch_Results:
     def parse_dataframe(self, c_image):
     
         # c_image is the row index for the HIT. 1 and 4 are column index for the strings with the lists of label data.
-        worker_assignment_raw = self.batch_results.iloc[c_image,1]
-        expert_assignment_raw = self.batch_results.iloc[c_image,4]
+        worker_assignment_raw = self.batch_results.iloc[c_image,2]
+        expert_assignment_raw = self.batch_results.iloc[c_image,5]
 
-        print(worker_assignment_raw)
-        print(expert_assignment_raw)
+        # print(worker_assignment_raw)
+        # print(expert_assignment_raw)
 
         # --------- WORKER -----------
         
@@ -89,7 +92,7 @@ class Batch_Results:
         replace = dict((re.escape(k), v) for k, v in replace.items())
         pattern = re.compile("|".join(replace.keys()))
         war_str_list = pattern.sub(lambda m: replace[re.escape(m.group(0))], worker_assignment_raw)
-    
+
         # convert comma-delimited string list to list of integers
         war_int_list = war_str_list.split(",")
         war_int_list = [int(i) for i in war_int_list]
@@ -120,9 +123,9 @@ class Batch_Results:
         # create an array for a given image URL of length x*y resolution
         # starting at the top left point, get x.res
         print(str(self.scale_factor))
-        x_res = int(self.batch_results.iloc[c_image,3]/self.scale_factor)
-        y_res = int(self.batch_results.iloc[c_image,2]/self.scale_factor)
-    
+        x_res = int(self.batch_results.iloc[c_image,4]/self.scale_factor)
+        y_res = int(self.batch_results.iloc[c_image,3]/self.scale_factor)
+
         
         # --------- WORKER -----------
         
@@ -203,11 +206,12 @@ class Batch_Results:
     def visualize_annotations(self, c_image):
         
         intersect_array = (self.tr_array) + (self.ex_array)
-    
+        HIT_number = self.batch_results.iloc[c_image,0]
+
         figure, axarr = plt.subplots(1,3,"row")
         figure.suptitle('Intersection visual for csv index: '+\
                         str(c_image+1) + ". Agreement: " +str(round(self.agreement,2))+\
-                        '\n HIT ID: ' + '36U4VBVNQP9ZYQ5ZG9NVHQTEO9SRUV',\
+                        '\n HIT ID: ' + HIT_number,\
                         size=13, y=0.88)
         plt.tight_layout()
         
@@ -229,15 +233,18 @@ class Batch_Results:
 results = Batch_Results("batch_results.csv")
 
 results.csv_to_dataframe()
-results.downscale_factor_select(1)
-row_count = len(result.batch_results.index)-1
+results.downscale_factor_select(10)
+row_count = len(results.batch_results.index)
 
 for c_image in range(0,int(row_count)):
 
-    print(c_image)
+    print("Processing image " + str(c_image+1) + " of " + str(row_count))
     results.parse_dataframe(c_image)
     results.make_binary_2D_array()
     results.calculate_IOU()
-    results.visualize_annotations(c_image)
 
+    results.visualize_annotations(c_image)
+    # uncomment to generate plots for ALL images in the csv_writer
+    # to see a single HIT visual, enter:
+    # results.visualize_annotations("row_index_of_desired_HIT") in console
 
