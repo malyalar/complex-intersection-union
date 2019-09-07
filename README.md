@@ -7,6 +7,8 @@ Also outputs approval rates and other analyses to a csv. Can loop through a csv-
 ## Comments
 The script converts MTurk image annotations from workers to downscaled pixel arrays, with each element in the 2d array representing a pixel of the image that is either "marked" (1) or "unmarked" (0). For example, a 3100 * 3100 pixel image may be represented as a 310 * 310 2d array of T/F values. IOU is then calculated elementwise on these smaller representative arrays. Downscaling allows for large batches of images to be processed rapidly with insignificant error from loss of fidelity in the annotation data. The downscaling factor can be set to 1 for fully accurate calculations, which will still run reasonably quickly even on "large" (e.g. 3100 * 3100px) images.
 
+IoU calculation function, calculate_IOU(), can be easily modified to output F1/Dice coefficient instead.
+
 ### Inputs
 
 MTurk bounding-box worker annotations are written into batch_results.csv's as strings, representing an array of variable length (depending on how many boxes are drawn by the Worker):
