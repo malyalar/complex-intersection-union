@@ -7,6 +7,7 @@ Created on Wed Jan 15 13:21:37 2020
 - here, the color is yellow (255,255,0)
 - finds the first and last yellow pixel in the picture
 - does a little math to determine which pixel is l and t, and then what w and h are for the BB.
+- CANNOT determine if there are multiple BBs, nor create annotations for multiple BBs.
 """
 
 import numpy as np
