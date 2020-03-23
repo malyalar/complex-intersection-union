@@ -25,6 +25,9 @@ MTurk bounding-box worker annotations are written into batch_results.csv's as st
 
 Intersection-over-union result is 15.99%. Agreement is written to batch_results.csv. (The image does not correspond to the input labels given above.)
 
+## Scraping bounding box annotations in image format
+
+RGBannotationscraper.py included to take images with drawings of bounding boxes over them, and determine and output l/t/w/h numeric format annotation of the bounding box. Works only with single bounding boxes.
 
 ## Other
 
