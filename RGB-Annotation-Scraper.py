@@ -23,16 +23,6 @@ class Batch_Results:
     def __init__(self):
     
             self.jpgDF = ""
-            
-            """
-            self.l = ""
-            self.t = ""
-            self.w = ""
-            self.h = ""
-            self.agreement = ""
-            """
-            
-            # self.batch_results = ""
     
     def createJPGdataframe(self,jpgDF=""):
         
@@ -51,17 +41,8 @@ class Batch_Results:
                     arr = imageio.imread(([filename])[0], as_gray=False, pilmode="RGB")
                     indices = []
                     
-                    """
-                    print(arr[221,314]) # 3-vector for a pixel    
-                    print(arr[221,314,1]) # get the green value for a pixel
-                    print(arr.shape) #x_len, y_len, R/G/B
-                    
-                    print(arr.shape[2])
-                    """
-                    
                     print("Now processing image " + str(row_count) + " of " + str(fileCount))
-                    
-                    
+                   
                     for i in range(0,arr.shape[0]):
                         for k in range(0,arr.shape[1]):
                             if np.all(np.asarray(arr[i,k])==np.asarray([255,255,0])):
@@ -100,7 +81,6 @@ class Batch_Results:
         jpgDF.to_csv('image_list.csv', sep=';', encoding='utf-8')
         
         print("Results written to .csv at: " + str(directoryName) + "image_list.csv")
-
 
 results = Batch_Results()  
 results.createJPGdataframe()
