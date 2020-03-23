@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Jan 15 13:21:37 2020
-
 - a script that scrapes bounding box (BB) annotaions from a directory of annotated images
 - takes an image and loads it into a multidimensional pixel array
 - looks for indices in the array where the RGB format color of the BB is seen
