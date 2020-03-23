@@ -2,13 +2,12 @@
 """
 Created on Wed Jan 15 13:21:37 2020
 
-a script that scrapes BB annotaions from a directory of 
-CMF images
-
-takes an image and loads it into THREE 1d arrays of n pixels (n = x_res*y_res)
-
-    
-    
+- a script that scrapes bounding box (BB) annotaions from a directory of annotated images
+- takes an image and loads it into a multidimensional pixel array
+- looks for indices in the array where the RGB format color of the BB is seen
+- here, the color is yellow (255,255,0)
+- finds the first and last yellow pixel in the picture
+- does a little math to determine which pixel is l and t, and then what w and h are for the BB.
 """
 
 import numpy as np
